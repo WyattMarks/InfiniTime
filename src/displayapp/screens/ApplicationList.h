@@ -53,14 +53,14 @@ namespace Pinetime {
           {Symbols::music, Apps::Music, true},
 
           {Symbols::map, Apps::Navigation, Applications::Screens::Navigation::IsAvailable(filesystem)},
+          {Symbols::calendar, Apps::Calendar, true},
           {Symbols::drum, Apps::Metronome, true},
           {Symbols::paintbrush, Apps::Paint, true},
           {Symbols::paddle, Apps::Paddle, true},
           {"2", Apps::Twos, true},
-          {Symbols::bone, Apps::CatDog, true},
           
           {Symbols::dove, Apps::Bird, true},
-          {Symbols::none, Apps::None, false},
+          {Symbols::bone, Apps::CatDog, true},
           {Symbols::none, Apps::None, false},
           {Symbols::none, Apps::None, false},
           {Symbols::none, Apps::None, false},

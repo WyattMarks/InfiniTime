@@ -18,6 +18,7 @@ namespace Pinetime {
       Music,
       CatDog,
       Bird,
+      Calendar,
       Paint,
       Paddle,
       Twos,
