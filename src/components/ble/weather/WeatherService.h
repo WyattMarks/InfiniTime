@@ -70,6 +70,18 @@ namespace Pinetime {
        */
       int16_t GetTodayMinTemp() const;
 
+      /**
+       * Converts the temperature in degrees Celsius to degrees Fahrenheit
+       * @return -32768 if there's no data, degrees Fahrenheit times 100 otherwise
+       */
+      int16_t GetTempFahrenheit(std::unique_ptr<WeatherData::Temperature>& temp) const;
+
+      /**
+       * Converts the dew point in degrees Celsius to degrees Fahrenheit
+       * @return -32768 if there's no data, degrees Fahrenheit times 100 otherwise
+       */
+      int16_t GetDewPointFahrenheit(std::unique_ptr<WeatherData::Temperature>& temp) const;
+
       /*
        * Management functions
        */

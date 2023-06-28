@@ -606,6 +606,20 @@ namespace Pinetime {
       return result;
     }
 
+    int16_t WeatherService::GetTempFahrenheit(std::unique_ptr<WeatherData::Temperature>& temp) const {
+      if (temp->temperature == -32768) {
+        return -32768;
+      }
+      return temp->temperature * 9 / 5 + 3200;
+    }
+
+    int16_t WeatherService::GetDewPointFahrenheit(std::unique_ptr<WeatherData::Temperature>& temp) const {
+      if (temp->dewPoint == -32768) {
+        return -32768;
+      }
+      return temp->dewPoint * 9 / 5 + 3200;
+    }
+
     void WeatherService::CleanUpQcbor(QCBORDecodeContext* decodeContext) {
       QCBORDecode_ExitMap(decodeContext);
       QCBORDecode_Finish(decodeContext);
