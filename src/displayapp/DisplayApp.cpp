@@ -551,13 +551,11 @@ void DisplayApp::LoadScreen(Apps app, DisplayApp::FullRefreshDirections directio
     case Apps::Paddle:
       currentScreen = std::make_unique<Screens::Paddle>(lvgl);
       break;
-<<<<<<< HEAD
     case Apps::CatDog:
       currentScreen = std::make_unique<Screens::CatDog>();
-=======
+      break;
     case Apps::Bird:
       currentScreen = std::make_unique<Screens::Bird>(lvgl);
->>>>>>> f12d5105 (new game: bird and cactus)
       break;
     case Apps::Music:
       currentScreen = std::make_unique<Screens::Music>(systemTask->nimble().music());
