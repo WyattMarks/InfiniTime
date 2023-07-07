@@ -3,7 +3,7 @@
 #include <lvgl/lvgl.h>
 #include <cstdint>
 #include "displayapp/screens/Screen.h"
-#define HORIZON 18000
+#define HORIZON   18000
 #define MIN_POWER 200
 #define MAX_POWER 500
 
@@ -26,7 +26,19 @@ namespace Pinetime {
         bool OnTouchEvent(uint16_t x, uint16_t y) override;
 
       private:
-        enum class State : uint8_t { Idle, Stopped, Prompt, WaitUser, ComputerThrowing, UserThrowing, BoneFlying, CatHit, DogHit, Missed, Result };
+        enum class State : uint8_t {
+          Idle,
+          Stopped,
+          Prompt,
+          WaitUser,
+          ComputerThrowing,
+          UserThrowing,
+          BoneFlying,
+          CatHit,
+          DogHit,
+          Missed,
+          Result
+        };
         State state = State::Idle;
 
         int16_t throwPower = MIN_POWER;

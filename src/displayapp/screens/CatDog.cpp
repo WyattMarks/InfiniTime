@@ -69,15 +69,14 @@ CatDog::~CatDog() {
   lv_obj_clean(lv_scr_act());
 }
 
-
 void CatDog::Refresh() {
-  switch(state) {
+  switch (state) {
     case CatDog::State::Idle:
       // add a delay to reject previous press event
       if (animationTime > 0) {
         animationTime--;
       } else {
-        if (isGameStopped){
+        if (isGameStopped) {
           state = CatDog::State::Stopped;
         } else {
           state = CatDog::State::Prompt;
@@ -92,7 +91,7 @@ void CatDog::Refresh() {
         dogLifePoint = 100;
         UpdateLife();
         isDogsTurn = true;
-        animationTime=20;
+        animationTime = 20;
         isGameStopped = false;
         state = CatDog::State::Idle;
       }
@@ -108,15 +107,15 @@ void CatDog::Refresh() {
         lv_obj_align(info, lv_scr_act(), LV_ALIGN_IN_TOP_MID, 0, 40);
         lv_obj_align(powerBar, lv_scr_act(), LV_ALIGN_IN_TOP_MID, 0, 70);
         // throwPower for perfect hit is 370 + wind*12;
-        PCTargetThrowPower = 343 + wind*6 +rand()%54;
-        lv_obj_set_pos(bone, 215, HORIZON/100);
+        PCTargetThrowPower = 343 + wind * 6 + rand() % 54;
+        lv_obj_set_pos(bone, 215, HORIZON / 100);
         state = CatDog::State::ComputerThrowing;
       }
       break;
     case CatDog::State::WaitUser:
       if (isPressing) {
         lv_obj_align(powerBar, lv_scr_act(), LV_ALIGN_IN_TOP_MID, 0, 70); // show powerBar
-        lv_obj_set_pos(bone, 5, HORIZON/100);
+        lv_obj_set_pos(bone, 5, HORIZON / 100);
         state = CatDog::State::UserThrowing;
       }
       break;
@@ -124,12 +123,12 @@ void CatDog::Refresh() {
       if ((!isPressing && throwPower > MIN_POWER + 20) || throwPower >= MAX_POWER) {
         Throw(throwPower);
       } else {
-        throwPower+=3;
+        throwPower += 3;
         lv_bar_set_value(powerBar, throwPower, LV_ANIM_OFF);
       }
       break;
     case CatDog::State::ComputerThrowing:
-      if (throwPower < PCTargetThrowPower){
+      if (throwPower < PCTargetThrowPower) {
         throwPower += 3;
         lv_bar_set_value(powerBar, throwPower, LV_ANIM_OFF);
       } else {
@@ -137,17 +136,17 @@ void CatDog::Refresh() {
       }
       break;
     case CatDog::State::BoneFlying:
-      boneVY +=33; // gravity
+      boneVY += 33;   // gravity
       boneVX += wind; // acceleration caused by wind
       boneX += boneVX;
       boneY += boneVY;
-      lv_obj_set_pos(bone, boneX/100, boneY/100);
-      if ( boneY >= HORIZON || boneX > 24000 || boneX < -2400 ){
-        if ( -2400 < boneX && boneX < 24000){
-          if (isDogsTurn){
-            handleDamage(abs(boneX-21500)/100);
+      lv_obj_set_pos(bone, boneX / 100, boneY / 100);
+      if (boneY >= HORIZON || boneX > 24000 || boneX < -2400) {
+        if (-2400 < boneX && boneX < 24000) {
+          if (isDogsTurn) {
+            handleDamage(abs(boneX - 21500) / 100);
           } else {
-            handleDamage(abs(boneX-500)/100);
+            handleDamage(abs(boneX - 500) / 100);
           }
         } else {
           handleDamage(100); // missed
@@ -155,11 +154,11 @@ void CatDog::Refresh() {
       }
       break;
     case CatDog::State::CatHit:
-      if(animationTime>0){
+      if (animationTime > 0) {
         animationTime--;
-        if(animationTime%4 == 0){
+        if (animationTime % 4 == 0) {
           lv_obj_set_style_local_text_color(cat, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, lv_color_hex(0xa2d9ce));
-        } else if (animationTime%4 == 2){
+        } else if (animationTime % 4 == 2) {
           lv_obj_set_style_local_text_color(cat, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_RED);
         }
       } else {
@@ -167,11 +166,11 @@ void CatDog::Refresh() {
       }
       break;
     case CatDog::State::DogHit:
-      if(animationTime>0){
+      if (animationTime > 0) {
         animationTime--;
-        if(animationTime%4 == 0){
+        if (animationTime % 4 == 0) {
           lv_obj_set_style_local_text_color(dog, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, lv_color_hex(0xf7dc6f));
-        } else if (animationTime%4 == 2){
+        } else if (animationTime % 4 == 2) {
           lv_obj_set_style_local_text_color(dog, LV_BTN_PART_MAIN, LV_STATE_DEFAULT, LV_COLOR_RED);
         }
       } else {
@@ -179,27 +178,27 @@ void CatDog::Refresh() {
       }
       break;
     case CatDog::State::Missed:
-      if(animationTime>0){
+      if (animationTime > 0) {
         animationTime--;
       } else {
         state = CatDog::State::Result;
       }
       break;
     case CatDog::State::Result:
-      if (dogLifePoint == 0){
+      if (dogLifePoint == 0) {
         lv_label_set_text_static(info, "Cat Won!");
         lv_obj_align(info, lv_scr_act(), LV_ALIGN_IN_TOP_MID, 0, 40);
-        animationTime=20;
+        animationTime = 20;
         isGameStopped = true;
         state = CatDog::State::Idle;
-      } else if (catLifePoint == 0 ){
+      } else if (catLifePoint == 0) {
         lv_label_set_text_static(info, "You Won!");
         lv_obj_align(info, lv_scr_act(), LV_ALIGN_IN_TOP_MID, 0, 40);
-        animationTime=20;
+        animationTime = 20;
         isGameStopped = true;
         state = CatDog::State::Idle;
       } else {
-        isDogsTurn = ! isDogsTurn;
+        isDogsTurn = !isDogsTurn;
         state = CatDog::State::Prompt;
       }
       break;
@@ -208,31 +207,31 @@ void CatDog::Refresh() {
 }
 
 void CatDog::Throw(int16_t speed) {
-  lv_obj_set_pos(powerBar, 240, 240); //hide it
+  lv_obj_set_pos(powerBar, 240, 240); // hide it
   boneY = HORIZON;
   boneVX = speed;
   boneVY = 0;
-  if (speed > 0){
+  if (speed > 0) {
     boneX = 500;
-    boneVY -= 25*speed/10;
+    boneVY -= 25 * speed / 10;
   } else {
     // 100*(240-BONE_SIZE-5)
     boneX = 21500;
-    boneVY += 25*speed/10;
+    boneVY += 25 * speed / 10;
   }
   throwPower = MIN_POWER;
   state = CatDog::State::BoneFlying;
 }
 
-void CatDog::handleDamage(uint8_t distance){
-  if (distance < 30){
+void CatDog::handleDamage(uint8_t distance) {
+  if (distance < 30) {
     // animationTime is propotional to damage
-    animationTime = (50-distance);
-    if(isDogsTurn){
-      catLifePoint -= animationTime/2;
+    animationTime = (50 - distance);
+    if (isDogsTurn) {
+      catLifePoint -= animationTime / 2;
       state = CatDog::State::CatHit;
     } else {
-      dogLifePoint -= animationTime/2;
+      dogLifePoint -= animationTime / 2;
       state = CatDog::State::DogHit;
     }
   } else {
@@ -246,13 +245,13 @@ void CatDog::handleDamage(uint8_t distance){
 
 void CatDog::RandomWind() {
   wind = rand() % 9 - 4; // -4 to 4
-  lv_obj_set_size(windBar, abs(wind)*15, 4);
+  lv_obj_set_size(windBar, abs(wind) * 15, 4);
   lv_obj_set_pos(windBar, 50, 30);
-  lv_obj_align(windBar, lv_scr_act(), LV_ALIGN_IN_TOP_MID, wind*15/2, 30);
+  lv_obj_align(windBar, lv_scr_act(), LV_ALIGN_IN_TOP_MID, wind * 15 / 2, 30);
 
-  if ( wind > 0 ) {
+  if (wind > 0) {
     lv_label_set_text_static(windTxt, " wind>");
-  } else if ( wind < 0 ){
+  } else if (wind < 0) {
     lv_label_set_text_static(windTxt, "<wind ");
   } else {
     lv_label_set_text_static(windTxt, " wind ");
@@ -260,11 +259,11 @@ void CatDog::RandomWind() {
   lv_obj_align(windTxt, lv_scr_act(), LV_ALIGN_IN_TOP_MID, 0, 0);
 }
 
-void CatDog::UpdateLife(){
-  if(catLifePoint > 100 ){
+void CatDog::UpdateLife() {
+  if (catLifePoint > 100) {
     catLifePoint = 0;
   }
-  if(dogLifePoint > 100 ){
+  if (dogLifePoint > 100) {
     dogLifePoint = 0;
   }
   lv_obj_set_size(catLifeBar, catLifePoint, 2);
