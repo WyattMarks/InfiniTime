@@ -539,7 +539,12 @@ void WatchFacePineTimeStyle::Refresh() {
 
   if (weatherService.GetCurrentTemperature()->timestamp != 0 && weatherService.GetCurrentClouds()->timestamp != 0 &&
       weatherService.GetCurrentPrecipitation()->timestamp != 0) {
-    nowTemp = (weatherService.GetCurrentTemperature()->temperature / 100);
+    std::unique_ptr<Controllers::WeatherData::Temperature>& temp = weatherService.GetCurrentTemperature();
+    if (settingsController.GetWeatherFormat() == Controllers::Settings::WeatherFormat::Metric) {
+      nowTemp = temp->temperature / 100;
+    } else {
+      nowTemp = weatherService.GetTempFahrenheit(temp) / 100;
+    }
     clouds = (weatherService.GetCurrentClouds()->amount);
     precip = (weatherService.GetCurrentPrecipitation()->amount);
     if (nowTemp.IsUpdated()) {
