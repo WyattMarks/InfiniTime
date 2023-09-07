@@ -80,7 +80,8 @@ std::unique_ptr<Screen> Clock::WatchFaceDigitalScreen() {
                                                      notificationManager,
                                                      settingsController,
                                                      heartRateController,
-                                                     motionController);
+                                                     motionController,
+                                                     weatherService);
 }
 
 std::unique_ptr<Screen> Clock::WatchFaceAnalogScreen() {
