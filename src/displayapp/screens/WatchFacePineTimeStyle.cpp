@@ -537,8 +537,19 @@ void WatchFacePineTimeStyle::Refresh() {
     }
   }
 
-  if (weatherService.GetCurrentTemperature()->timestamp != 0 && weatherService.GetCurrentClouds()->timestamp != 0 &&
-      weatherService.GetCurrentPrecipitation()->timestamp != 0) {
+  const auto& newTemperatureEvent = weatherService.GetCurrentTemperature();
+  const auto& newCloudsEvent = weatherService.GetCurrentClouds();
+  const auto& newPrecipitationEvent = weatherService.GetCurrentPrecipitation();
+
+  if(newTemperatureEvent->timestamp == 0 && newCloudsEvent->timestamp == 0 && newPrecipitationEvent == 0) {
+    lv_label_set_text_static(temperature, "--");
+    lv_label_set_text(weatherIcon, Symbols::ban);
+    lv_obj_realign(temperature);
+    lv_obj_realign(weatherIcon);
+  }
+
+  // Assume 0 precipitation if no precipitation event were received
+  if (newTemperatureEvent->timestamp != 0 && newCloudsEvent->timestamp != 0 /*&& newPrecipitationEvent->timestamp !=0*/) {
     std::unique_ptr<Controllers::WeatherData::Temperature>& temp = weatherService.GetCurrentTemperature();
     if (settingsController.GetWeatherFormat() == Controllers::Settings::WeatherFormat::Metric) {
       nowTemp = temp->temperature / 100;
@@ -546,7 +557,7 @@ void WatchFacePineTimeStyle::Refresh() {
       nowTemp = weatherService.GetTempFahrenheit(temp) / 100;
     }
     clouds = (weatherService.GetCurrentClouds()->amount);
-    precip = (weatherService.GetCurrentPrecipitation()->amount);
+    precip = (newPrecipitationEvent->timestamp != 0) ? weatherService.GetCurrentPrecipitation()->amount : 0;
     if (nowTemp.IsUpdated()) {
       lv_label_set_text_fmt(temperature, "%d°", nowTemp.Get());
       if ((clouds <= 30) && (precip == 0)) {
