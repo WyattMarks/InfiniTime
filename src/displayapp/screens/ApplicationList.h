@@ -21,6 +21,7 @@ namespace Pinetime {
                                  Pinetime::Controllers::Settings& settingsController,
                                  const Pinetime::Controllers::Battery& batteryController,
                                  const Pinetime::Controllers::Ble& bleController,
+                                 const Pinetime::Controllers::AlarmController& alarmController,
                                  Controllers::DateTime& dateTimeController,
                                  Pinetime::Controllers::FS& filesystem);
         ~ApplicationList() override;
@@ -34,6 +35,7 @@ namespace Pinetime {
         Controllers::Settings& settingsController;
         const Pinetime::Controllers::Battery& batteryController;
         const Pinetime::Controllers::Ble& bleController;
+        const Pinetime::Controllers::AlarmController& alarmController;
         Controllers::DateTime& dateTimeController;
         Pinetime::Controllers::FS& filesystem;
 

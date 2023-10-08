@@ -412,8 +412,13 @@ void DisplayApp::LoadScreen(Apps app, DisplayApp::FullRefreshDirections directio
 
   switch (app) {
     case Apps::Launcher:
-      currentScreen =
-        std::make_unique<Screens::ApplicationList>(this, settingsController, batteryController, bleController, dateTimeController, filesystem);
+      currentScreen = std::make_unique<Screens::ApplicationList>(this,
+                                                                 settingsController,
+                                                                 batteryController,
+                                                                 bleController,
+                                                                 alarmController,
+                                                                 dateTimeController,
+                                                                 filesystem);
       break;
     case Apps::Motion:
       // currentScreen = std::make_unique<Screens::Motion>(motionController);
@@ -423,6 +428,7 @@ void DisplayApp::LoadScreen(Apps app, DisplayApp::FullRefreshDirections directio
       currentScreen = std::make_unique<Screens::Clock>(dateTimeController,
                                                        batteryController,
                                                        bleController,
+                                                       alarmController,
                                                        notificationManager,
                                                        settingsController,
                                                        heartRateController,
@@ -477,7 +483,8 @@ void DisplayApp::LoadScreen(Apps app, DisplayApp::FullRefreshDirections directio
                                                                brightnessController,
                                                                motorController,
                                                                settingsController,
-                                                               bleController);
+                                                               bleController,
+                                                               alarmController);
       break;
     case Apps::Settings:
       currentScreen = std::make_unique<Screens::Settings>(this, settingsController);
