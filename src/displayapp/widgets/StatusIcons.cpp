@@ -43,8 +43,7 @@ void StatusIcons::Update() {
     batteryIcon.SetBatteryPercentage(batteryPercent);
   }
 
-  bool alarmNotSet = (alarmController.State() == Pinetime::Controllers::AlarmController::AlarmState::Not_Set);
-  lv_obj_set_hidden(alarmIcon, alarmNotSet);
+  lv_obj_set_hidden(alarmIcon, !alarmController.IsEnabled() );
 
   bleState = bleController.IsConnected();
   bleRadioEnabled = bleController.IsRadioEnabled();
