@@ -138,7 +138,7 @@ void WatchFaceTerminal::Refresh() {
   heartbeatRunning = heartRateController.State() != Controllers::HeartRateController::States::Stopped;
   if (heartbeat.IsUpdated() || heartbeatRunning.IsUpdated()) {
     if (heartbeatRunning.Get()) {
-      if (heartbeat.Get() == 0) {
+      if (heartbeat.Get() == 0 || heartRateController.State() == Controllers::HeartRateController::States::NotEnoughData || heartRateController.State() == Controllers::HeartRateController::States::NoTouch) {
         lv_label_set_text_fmt(heartbeatValue, "[L_HR]#ee3311 -- bpm#");
       } else {
         lv_label_set_text_fmt(heartbeatValue, "[L_HR]#ee3311 %d bpm#", heartbeat.Get());

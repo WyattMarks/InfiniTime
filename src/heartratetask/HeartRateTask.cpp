@@ -101,6 +101,7 @@ void HeartRateTask::StartMeasurement() {
 void HeartRateTask::StopMeasurement() {
   heartRateSensor.Disable();
   ppg.Reset(true);
+  controller.Update(Controllers::HeartRateController::States::NotEnoughData, 0);
   vTaskDelay(100);
 }
 
