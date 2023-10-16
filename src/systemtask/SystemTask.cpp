@@ -96,6 +96,31 @@ void SystemTask::Process(void* instance) {
   app->Work();
 }
 
+void SystemTask::LoadStepsFromFile() {
+  lfs_file_t stepsFile;
+  uint32_t steps;
+
+  if (fs.FileOpen(&stepsFile, "/steps.dat", LFS_O_RDONLY) != LFS_ERR_OK) {
+    return;
+  }
+
+  fs.FileRead(&stepsFile, reinterpret_cast<uint8_t*>(&steps), sizeof(steps));
+  fs.FileClose(&stepsFile);
+
+  motionSensor.ResetStepCounter();
+  savedSteps = steps;
+}
+
+void SystemTask::SaveStepsToFile(uint32_t steps) {
+  lfs_file_t stepsFile;
+  if (fs.FileOpen(&stepsFile, "/steps.dat", LFS_O_WRONLY | LFS_O_CREAT) != LFS_ERR_OK) {
+    return;
+  }
+
+  fs.FileWrite(&stepsFile, reinterpret_cast<uint8_t*>(&steps), sizeof(steps));
+  fs.FileClose(&stepsFile);
+}
+
 void SystemTask::Work() {
   BootErrors bootError = BootErrors::None;
 
@@ -125,6 +150,9 @@ void SystemTask::Work() {
   dateTimeController.Register(this);
   batteryController.Register(this);
   motionSensor.SoftReset();
+
+  LoadStepsFromFile();
+
   alarmController.Init(this);
 
   // Reset the TWI device because the motion sensor chip most probably crashed it...
@@ -231,6 +259,7 @@ void SystemTask::Work() {
           if (doNotGoToSleep) {
             break;
           }
+          SaveStepsToFile(motionController.NbSteps());
           state = SystemTaskState::GoingToSleep; // Already set in PushMessage()
           NRF_LOG_INFO("[systemtask] Going to sleep");
           displayApp.PushMessage(Pinetime::Applications::Display::Messages::GoToSleep);
@@ -330,7 +359,7 @@ void SystemTask::Work() {
           state = SystemTaskState::Sleeping;
           break;
         case Messages::OnNewDay:
-          // We might be sleeping (with TWI device disabled.
+          // We might be sleeping (with TWI device disabled.)
           // Remember we'll have to reset the counter next time we're awake
           stepCounterMustBeReset = true;
           break;
@@ -419,12 +448,14 @@ void SystemTask::UpdateMotion() {
 
   if (stepCounterMustBeReset) {
     motionSensor.ResetStepCounter();
+    SaveStepsToFile(0);
+    savedSteps = 0;
     stepCounterMustBeReset = false;
   }
 
   auto motionValues = motionSensor.Process();
 
-  motionController.Update(motionValues.x, motionValues.y, motionValues.z, motionValues.steps);
+  motionController.Update(motionValues.x, motionValues.y, motionValues.z, motionValues.steps + savedSteps);
 
   if (settingsController.GetNotificationStatus() != Controllers::Settings::Notification::Sleep) {
     if ((settingsController.isWakeUpModeOn(Pinetime::Controllers::Settings::WakeUpMode::RaiseWrist) &&

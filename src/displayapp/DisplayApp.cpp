@@ -226,7 +226,7 @@ void DisplayApp::Refresh() {
         RestoreBrightness();
         break;
       case Messages::GoToSleep:
-	brightnessController.Set(Controllers::BrightnessController::Levels::Off);
+        brightnessController.Set(Controllers::BrightnessController::Levels::Off);
         lcd.Sleep();
         PushMessageToSystemTask(Pinetime::System::Messages::OnDisplayTaskSleeping);
         state = States::Idle;
