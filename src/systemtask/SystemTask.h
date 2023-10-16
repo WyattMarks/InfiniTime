@@ -137,6 +137,9 @@ namespace Pinetime {
       void UpdateMotion();
       bool stepCounterMustBeReset = false;
       static constexpr TickType_t batteryMeasurementPeriod = pdMS_TO_TICKS(10 * 60 * 1000);
+      void LoadStepsFromFile();
+      void SaveStepsToFile(uint32_t steps);
+      uint32_t savedSteps = 0;
 
       SystemMonitor monitor;
     };
